@@ -1,9 +1,14 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'A template with a Mapping to allow it to be run in a number of regions.'
+Parameters:
+  groupname:
+    Type: String
+    Default: ""
+    Description: Name for the CodeCommit IAM group
 Resources:
   S3LambdaBucket:
-    DeletionPolicy: Retain
+    DeletionPolicy: Delete
     Type: "AWS::S3::Bucket"
     Properties:
       AccessControl: PublicRead
@@ -25,9 +30,20 @@ Resources:
             Principal:
               AWS:
                 - "*"
+  iamGroup:
+    Type: AWS::IAM::Group
+    Properties: 
+      GroupName: !Ref groupname
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AdministratorAccess
 Outputs:
   lambdabucket:
     Description: Shared Infrastructure Lambda Bucket
     Value: !Ref S3LambdaBucket
     Export: # added to export
       Name: sharedinf-lambdabucketname
+  codecommitgroup:
+    Description: Shared Infrastructure IAM Group for Code Commit User
+    Value: !Ref iamGroup
+    Export: # added to export
+      Name: sharedinf-codecommitgroup

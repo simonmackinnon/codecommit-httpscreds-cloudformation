@@ -29,13 +29,8 @@ def reset_https_credentials(event, _):
     helper.Data['ServicePassword'] = response['ServiceSpecificCredential']['ServicePassword']
 
 @helper.delete
-def delete_https_credentials(event, _):
-    user = event['ResourceProperties']['user']
-
-    iamclient.delete_service_specific_credential(
-        UserName=user,
-        ServiceName='codecommit.amazonaws.com'
-    )
+def no_op(_, __):
+    pass
 
 def handler(event, context):
     print("Started execution of HTTPS Credentials Creator Lambda...")

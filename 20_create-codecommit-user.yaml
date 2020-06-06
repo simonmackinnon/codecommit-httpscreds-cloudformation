@@ -17,17 +17,11 @@ Resources:
     Type: "AWS::IAM::AccessKey"
     Properties:
       UserName: !Ref username
-  iamGroup:
-    Type: AWS::IAM::Group
-    Properties: 
-      GroupName: admin
-      ManagedPolicyArns: 
-        - arn:aws:iam::aws:policy/AdministratorAccess
   addUserToGroup:
     Type: AWS::IAM::UserToGroupAddition
     Properties: 
       GroupName: 
-        !Ref iamGroup
+        !ImportValue sharedinf-codecommitgroup
       Users: 
       - !Ref iamUser
   HttpsCredsCustomResource:
