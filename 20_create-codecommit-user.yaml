@@ -18,6 +18,7 @@ Resources:
     Properties:
       UserName: !Ref username
   addUserToGroup:
+    DependsOn: iamUser
     Type: AWS::IAM::UserToGroupAddition
     Properties: 
       GroupName: 
