@@ -1,0 +1,50 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'creates an iam user & group, assigns the user to the group, sets up https codecommit credentials'
+Parameters:
+  username:
+    Type: String
+    Default: ""
+    Description: Name for the CodeCommit User
+Resources:
+  iamUser:
+    Type: "AWS::IAM::User"
+    Properties:
+      UserName: 
+       !Ref username
+  iamkeys:
+    DependsOn: iamUser
+    Type: "AWS::IAM::AccessKey"
+    Properties:
+      UserName: !Ref username
+  addUserToGroup:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties: 
+      GroupName: 
+        !ImportValue sharedinf-jnrcodecommitgroup
+      Users: 
+      - !Ref iamUser
+  HttpsCredsCustomResource:
+    DependsOn: addUserToGroup
+    Type: "Custom::LambdaHttpsCreds" # or AWS::CloudFormation::CustomResource
+    Properties:
+      ServiceToken: !ImportValue sharedinf-httpscredsarn # The ARN of the lambda function - only mandatory property
+      # "Provider Defined Properties" Below..
+      user: !Ref username
+Outputs:
+  userakid:
+    Description: Support Access Key ID
+    Value: !Ref iamkeys
+  usersecretkey:
+    Description: Support Secret Access Key
+    Value: !GetAtt iamkeys.SecretAccessKey
+  httpscredsusername:
+    Description: IAM User CodeCommit HTTPS credentials username
+    Value: !GetAtt HttpsCredsCustomResource.ServiceUserName
+  httpscredspassword:
+    Description: IAM User CodeCommit HTTPS credentials password
+    Value: !GetAtt HttpsCredsCustomResource.ServicePassword
+
+
+  
+

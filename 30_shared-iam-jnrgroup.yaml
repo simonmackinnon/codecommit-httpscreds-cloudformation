@@ -1,0 +1,46 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'A template with a Mapping to allow it to be run in a number of regions.'
+Parameters:
+  groupname:
+    Type: String
+    Default: ""
+    Description: Name for the Jnr Devs CodeCommit IAM group
+Resources:
+  iamGroup:
+    Type: AWS::IAM::Group
+    Properties: 
+      GroupName: !Ref groupname
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      Policies: 
+        - 
+          PolicyName: "CannotPushToMasterInCodeCommit"
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Deny
+              Action:
+              - codecommit:GitPush
+              - codecommit:DeleteBranch
+              - codecommit:PutFile
+              - codecommit:MergeBranchesByFastForward
+              - codecommit:MergeBranchesBySquash
+              - codecommit:MergeBranchesByThreeWay
+              - codecommit:MergePullRequestByFastForward
+              - codecommit:MergePullRequestBySquash
+              - codecommit:MergePullRequestByThreeWay
+              Resource: arn:aws:codecommit:ap-southeast-2:366389342275:my-webpage
+              Condition:
+                StringEqualsIfExists:
+                  codecommit:References:
+                  - refs/heads/master
+                  - refs/heads/prod
+                'Null':
+                  codecommit:References: false
+Outputs:
+  codecommitgroup:
+    Description: Shared Infrastructure IAM Group for (Jnr) Code Commit User
+    Value: !Ref iamGroup
+    Export: # added to export
+      Name: sharedinf-jnrcodecommitgroup
