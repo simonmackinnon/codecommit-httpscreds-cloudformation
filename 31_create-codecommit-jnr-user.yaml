@@ -13,12 +13,10 @@ Resources:
       UserName: 
        !Ref username
   iamkeys:
-    DependsOn: iamUser
     Type: "AWS::IAM::AccessKey"
     Properties:
-      UserName: !Ref username
+      UserName: !Ref iamUser
   addUserToGroup:
-    DependsOn: iamUser
     Type: AWS::IAM::UserToGroupAddition
     Properties: 
       GroupName: 
