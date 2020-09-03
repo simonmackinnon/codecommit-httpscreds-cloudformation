@@ -31,10 +31,10 @@ Resources:
       # "Provider Defined Properties" Below..
       user: !Ref username
 Outputs:
-  adminakid:
+  userkey:
     Description: Support Access Key ID
     Value: !Ref iamkeys
-  adminsecretkey:
+  usersecretkey:
     Description: Support Secret Access Key
     Value: !GetAtt iamkeys.SecretAccessKey
   httpscredsusername:

@@ -15,7 +15,7 @@ aws cloudformation create-stack --stack-name Shared-Infrastructure --template-bo
 e.g.
 
 ```bash
-aws s3 cp ./httpscreds.zip s3://shared-infrastructure-s3lambdabucket-1sh3dfvghas3q
+aws s3 cp ./httpscreds.zip s3://shared-infrastructure-s3lambdabucket-xb4p0sufkfj9
 ```
 
 4. Create the 10_credentials-creator-lambda.yaml CFN stack. This deploys the Lambda to the bucket created in the previous stack
